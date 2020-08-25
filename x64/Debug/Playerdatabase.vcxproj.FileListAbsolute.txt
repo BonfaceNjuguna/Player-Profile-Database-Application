@@ -1,0 +1,2 @@
+D:\AIE\c++ projects\Playerdatabase\Player Profile Database Application\x64\Debug\Playerdatabase.exe
+D:\AIE\c++ projects\Playerdatabase\Player Profile Database Application\x64\Debug\Playerdatabase.pdb
