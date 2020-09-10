@@ -9,74 +9,67 @@ using namespace std;
 class file
 {
     private:
-        int studentId;
-        string studentName;
-        int studentAge;
-        long long studentPhno;
+        int StudentId;
+        string StudentName;
+        int StudentAge;
+        long long StudentPhno;
         char module[30];
         string teacherName;
 
 
     public:
 
-            //This function takes input from user about Student Details
-            //The input taken by this function is stored in the File using writeFile() function
+            
         void input() {
 
             cout << "\nEnter Student id no: ";
-            cin >> studentId;
+            cin >> StudentId;
             cout << "\nEnter Student age: ";
-            cin >> studentAge;
+            cin >> StudentAge;
 
-            //input Student Name as First Name and Second Name
-            string strFname = "", strLname = "";
-            cout << "\nEnter the First Name of Student: ";
-            cin >> strFname;
-            cout << "\nEnter the Last Name of Student: ";
-            cin >> strLname;
-            studentName = strFname + " " + strLname;//Stores the Student as Fname_Lname
+            string strName = "";
+            cout << "\nEnter the Name of Student: ";
+            cin >> strName;
+            StudentName = strName;
 
             cout << "\nEnter Student phone no.: ";
-            cin >> studentPhno;
+            cin >> StudentPhno;
 
             cout << "\nEnter module name 'c++', 'c#', 'java', 'go', 'php', 'dart', '3D'\nModule Name: ";
             cin >> module;
 
-            //Taking input of coach name as Fname and Lname
-            cout << "\nEnter the First Name of Teacher: ";
-            cin >> strFname;
-            cout << "\nEnter the Last Name of Teacher: ";
-            cin >> strLname;
-            teacherName = strFname + " " + strLname;
+            cout << "\nEnter the Name of Teacher: ";
+            cin >> strName;
+            teacherName = strName;
         }
         void output() {
             cout << "\n Student Details: \n";
-            cout << "studentId==>" << studentId << endl;
-            cout << "student name==>" << studentName << endl;
-            cout << "phone no==>" << studentPhno << endl;
+            cout << "StudentId==>" << StudentId << endl;
+            cout << "Student name==>" << StudentName << endl;
+            cout << "phone no==>" << StudentPhno << endl;
             cout << "module taken==>" << module << endl;
             cout << "coach assigned==>" << teacherName << endl;
         }
 
 
-        string retstudentname() {
-            return studentName;
+        string retStudentname() {
+            return StudentName;
         }
 
 
-        int retstudentid() {
-            return studentId;
+        int retStudentid() {
+            return StudentId;
         }
 
-        int retstudentage() {
-            return studentAge;
+        int retStudentage() {
+            return StudentAge;
         }
 
-        long long  rstudentphno() {
-            return studentPhno;
+        long long  rStudentphno() {
+            return StudentPhno;
         }
 
-        char* rstudentmodule() {
+        char* rStudentmodule() {
             return module;
         }
 
@@ -85,6 +78,115 @@ class file
         }
 };
 
+void writeInFile(file fobj) {
+
+    char arr[] = "     ";
+    ofstream fout;
+    fout.open("StudentsRecord.txt", ios::out | ios::app);
+
+    fout << fobj.retStudentid(); fout << arr;
+    fout << fobj.retStudentname(); fout << arr;
+    fout << fobj.retStudentage(); fout << arr;
+    fout << fobj.rStudentphno(); fout << arr;
+    fout << fobj.rStudentmodule(); fout << arr;
+    fout << fobj.rteachername(); fout << arr;
+
+    fout << '\n';
+
+
+    fout.close();
+
+}
+
+void deleteInRecords(int choice) {
+
+    string deleteString;
+    string strName = "";
+    if (choice == 1) {   
+        cout << "Enter the Student's Id whose record needs to be deleted\n";
+        cin >> deleteString;
+        deleteString = "id" + deleteString;
+        cout << "deleteString: " << deleteString << endl;
+    }
+    else {              
+        cout << "Enter the  Name of Student: ";
+        cin >> strName;
+        deleteString = strName;
+        cout << "deleteString: " << deleteString << endl;
+    }
+
+
+    ifstream readFile;
+    ofstream writeFile("sample.txt");
+
+    char charsInLine[1024];
+
+    readFile.open("StudentsRecord.txt");
+    int count = 0;
+    bool found = false;
+    while (!readFile.eof()) {
+
+        readFile.getline(charsInLine, 1024);
+        string strLine(charsInLine);
+        cout << count << ": " << charsInLine << endl;
+
+        size_t found = strLine.find(deleteString);
+
+        if (found != string::npos) {
+
+            found = true;
+            break;
+        }
+
+        else {
+            writeFile << charsInLine;
+            writeFile << "\n";
+        }
+        count++;
+
+    }
+
+    readFile.close(); 
+    writeFile.close();
+
+    remove("StudentsRecord.txt"); 
+    rename("sample.txt", "StudentsRecord.txt"); 
+
+   //if no records found with entered Id or Name
+    if (found == false) {
+        cout << "No records available...!\n";
+    }
+}
+
+void countStudents() {
+    ifstream readFile;
+    char charsInLine[1024];
+    int countStudent = 0;
+
+    readFile.open("StudentsRecord.txt"); 
+    while (!readFile.eof()) {
+
+        readFile.getline(charsInLine, 1024);
+        string strLine(charsInLine); 
+
+        
+        size_t found = strLine.find("id"); 
+
+        if (found != string::npos) {
+            countStudent++;
+            cout << charsInLine << endl; 
+        }
+        else {
+            break;
+        }
+    }
+
+    cout << "Number of Students available in our Records: " << countStudent << endl;
+    readFile.close(); 
+
+}
+
+//show all records
 void showAllRecords() {
 
     ifstream readFile;
@@ -99,7 +201,7 @@ void showAllRecords() {
     readFile.close();
 
 }
-
+//count the number of Students in a module
 void countStudentsInmodule() {
 
     ifstream readFile;
@@ -115,7 +217,6 @@ void countStudentsInmodule() {
     for (int i = 0; i < 7; i++) {    
 
         moduleName = modules[i];
-       // cout<<"moduleName: "<<moduleName<<endl;
         int countmodule = 0;
 
         ifstream readFile;
@@ -130,143 +231,136 @@ void countStudentsInmodule() {
             size_t found = strLine.find(moduleName);
             if (found != string::npos) {
                 countmodule++;
-                //cout<<charsInLine<<endl;
-
             }
         }
 
         readFile.close();
 
         cout << "No. of Students enrolled in " << moduleName << ": " << countmodule << endl;
-        countmodule = 0; //initializing again as 0 to count for next module
+        countmodule = 0; 
     }
 }
 
-void searchInRecords(int choice) {
-    // char module[12];  //string module
-    string searchString = "";
-    string strFname = "", strLname = "";
+//search the record
+//void searchInRecords(int choice) {
+//    string searchString = "";
+//    string strName = "";
+//
+//    switch (choice) {
+//
+//    case 1:
+//        cout << "Enter the Name of Student: ";
+//        cin >> strName;
+//        searchString = strName;
+//        cout << "Search String: " << searchString << endl;
+//        break;
+//
+//    case 2: cout << "Enter the Student Id: ";
+//        cin >> searchString;
+//        searchString = searchString;
+//        cout << "Search String: " << searchString << endl;
+//        break;
+//
+//    case 4: cout << "Enter Student's module name 'c++', 'c#', 'java', 'go', 'php', 'dart', '3D' : ";
+//        cin >> searchString;
+//        break;
+//
+//    case 5: cout << "Wrong Input..! Enter your choice again...\n";
+//        break;
+//
+//    }
+//
+//
+//    ifstream readFile;
+//    readFile.open("StudentsRecord.txt");
+//    char charsInLine[1024]; int count = 0;  
+//    searchString = searchString + " ";
+//
+//    while (!readFile.eof()) {
+//        readFile.getline(charsInLine, 1024);
+//
+//        string strLine(charsInLine);  
+//
+//        size_t found = strLine.find(searchString); //stores the info whether a particular string(module) form in the line of not
+//
+//        if (found != string::npos) {
+//            count++;
+//            cout << "Records " << count << " : " << charsInLine << endl;
+//        }
+//    }
+//
+//    readFile.close();
+//    if (count == 0)
+//        cout << "NO records found...!\n";
+//    else {
+//        cout << "No. of Records found for " << searchString << ": " << count << endl;
+//    }
+//}
 
-    switch (choice) {
-
-    case 1: //string strFname="", strLname="";
-        cout << "Enter the First Name of Student: ";
-        cin >> strFname;
-        cout << "Enter the Last Name of Student: ";
-        cin >> strLname;
-        searchString = strFname + " " + strLname;  //ex. Aastha_Anand  here Fname= Aastha Lname= Anand
-        cout << "Search String: " << searchString << endl;
-        break;
-
-    case 2: cout << "Enter the Student Id: ";
-        cin >> searchString;
-        searchString = "id" + searchString;
-        cout << "Search String: " << searchString << endl;
-        break;
-
-    case 4: cout << "Enter Student's module name 'c++', 'c#', 'java', 'go', 'php', 'dart', '3D' : ";
-        cin >> searchString;
-        break;
-
-    case 5: cout << "Wrong Input..! Enter your choice again...\n";
-        break;
-
-    }
-
-
-    ifstream readFile;
-    readFile.open("StudentsRecord.txt");
-    char charsInLine[1024]; int count = 0;  
-    searchString = searchString + " ";
-
-    while (!readFile.eof()) {
-        //cout<<"Im inside while\n";
-        readFile.getline(charsInLine, 1024);
-        //   cout<<"Records row: "<<charsInLine<<endl;
-
-        string strLine(charsInLine);  //Casting a char array to string
-
-        size_t found = strLine.find(searchString); //stores the info whether a particular string(module) form in the line of not
-
-        if (found != string::npos) {
-            count++;
-            cout << "Records " << count << " : " << charsInLine << endl;  //printing the Record for the module
-        }
-    }
-
-    readFile.close();
-    if (count == 0)
-        cout << "NO records found...!\n";
-    else {
-        cout << "No. of Records found for " << searchString << ": " << count << endl;
-    }
-}
-
-
+//clear records
 void clearCompleteDatabase() {
     int x;
-    cout << "Do you want to delete the complete database of Stdents...?\n Press 1 to confirm: ";
+    cout << "Do you want to delete the complete database of Students...?\n Press 1 to confirm: ";
     cin >> x;
 
     if (x == 1) {
-        remove("StudentsRecord.txt"); //Delete the file
-        ofstream writeFile("StudentsRecord.txt");  //Creates a new empty
-        writeFile.close(); //closes the file
+        remove("StudentsRecord.txt");
+        ofstream writeFile("StudentsRecord.txt"); 
+        writeFile.close();
     }
 }
 
 int main() {
 
-    //file fileobj;   //Instance(object) of file class
+    file fileobj;   
 
     while (1) {
         int choice;
-        cout << "\n\n=============== AIE STUDENTS MANAGEMENT MENU ===================";
+        cout << "\n\n= AIE StudentS MANAGEMENT MENU =";
         cout << "\n1: Add a new Student Record";
         cout << "\n2: Show all Students Record";
         cout << "\n3: Delete Student by Student Id from Record";
-        cout << "\n4: Delete Student by Student Name from Record";
-        cout << "\n5: Search Student using Student Name";
-        cout << "\n6: Search Student using Student Id";
-        cout << "\n7: Search Student in a specific Module";
-        cout << "\n8: Count the No. of Students in all Modules";
-        cout << "\n9: Count the Total no. of Student's Record";
-        cout << "\n10: Clear the complete database of Students's Record";
-        cout << "\n11: Exit from Program";
+        //cout << "\n4: Delete Student by Student Name from Record";
+        //cout << "\n5: Search Student using Student Name";
+        //cout << "\n4: Search Student using Student Id";
+        cout << "\n4: Search Student in a specific Module";
+        //cout << "\n8: Count the No. of Students in all Modules";
+        //cout << "\n9: Count the Total no. of Student's Record";
+        cout << "\n5: Clear the complete database of Students's Record";
+        cout << "\n6: Exit from Program";
 
         cout << "\n\nEnter your choice...!\n";
         cin >> choice;
-        system("cls");//clearing the console
+        system("cls");
 
-        //switch (choice) {
+        switch (choice) {
 
-        //case 1: fileobj.input();  //Takes input for the instance
-        //    writeInFile(fileobj); //1: Writes the Input Record in File
+        case 1: fileobj.input();
+            writeInFile(fileobj);
+            break;
+        case 2: showAllRecords();
+            break;
+        case 3: deleteInRecords(1);
+            break;
+        //case 4: deleteInRecords(2);
         //    break;
-        //case 2: showAllRecords();
+        //case 5: searchInRecords(1);
         //    break;
-        //case 3: deleteInRecords(1);//3: Delete Student by its Student Id from Record
+        //case 4: searchInRecords(2);
         //    break;
-        //case 4: deleteInRecords(2);//4: Delete Student by its Student Name from Record
+        case 4: countStudentsInmodule();
+            break;
+        //case 8: countStudentsInmodule();
         //    break;
-        //case 5: searchInRecords(1);//5: Search Student using "Student Name"
+        //case 9: countStudents();
         //    break;
-        //case 6: searchInRecords(2);//6: Search Student using "Student Id"
-        //    break;
-        //case 7: searchInRecords(6);//10: Search Student's details of particular "module"
-        //    break; v
-        //case 8: countStudentsInmodule();//11: Count Students in all modules;
-        //    break;
-        //case 9: countStudents();//12: Count Students in individual module
-        //    break;
-        //case 10: clearCompleteDatabase();
-        //    break;
-        //case 11: cout << "Exiting from program...\n";
-        //    exit(0);  //closes the program
-        //default: cout << "Wrong Choice..! enter your choice again...\n";
-        //    break;
+        case 5: clearCompleteDatabase();
+            break;
+        case 6: cout << "Exiting from program...\n";
+            exit(0);  
+        default: cout << "Wrong Choice..! enter your choice again...\n";
+            break;
 
-        //}//end of switch;
-    }//end of while
-
-}//end of main
+        }
+    }
+}
